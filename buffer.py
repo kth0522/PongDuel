@@ -3,13 +3,13 @@ import os
 import random
 
 class ReplayBuffer:
-    def __init__(self, size=1000000, input_shape=(12,), use_per=True):
+    def __init__(self, size=100000, input_shape=(12,), use_per=True):
         self.size = size
         self.input_shape = input_shape
         self.count = 0 # total index of memory written to
         self.current = 0 # index to write to
         self.multistep=True
-        self.n_step = 3
+        self.n_step = 5
         self.actions = np.empty(self.size, dtype=np.int32)
         self.rewards = np.empty(self.size, dtype=np.float32)
         self.states = np.empty((self.size, self.input_shape[0]))
@@ -71,8 +71,10 @@ class ReplayBuffer:
         if self.use_per:
             importance = 1/self.count * 1/sample_probabilities[[index for index in indices]]
             importance = importance / importance.max()
-
-            return (states, self.actions[indices], self.rewards[indices], new_states, self.dones[indices]), importance, indices
+            if self.multistep:
+                return states, self.actions[indices], multi_step_rewards, end_states, multi_step_dones, importance, indices
+            else:
+                return (states, self.actions[indices], self.rewards[indices], new_states, self.dones[indices]), importance, indices
         elif self.multistep:
             return states, self.actions[indices], multi_step_rewards, end_states, multi_step_dones
         else:

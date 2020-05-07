@@ -12,7 +12,7 @@ class Agent(object):
                  replay_buffer,
                  n_actions,
                  input_shape=(12,),
-                 batch_size=32,
+                 batch_size=64,
                  eps_initial=1,
                  eps_mid=0.5,
                  eps_final=0.1,
@@ -20,11 +20,11 @@ class Agent(object):
                  eps_annealing_states=1000000,
                  replay_buffer_start_size=50000,
                  max_states=25000000,
-                 use_per=True):
+                 use_per=False):
         self.n_actions = n_actions
         self.input_shape = input_shape
         self.multistep = True
-        self.n_step = 3
+        self.n_step = 5
 
         self.gamma = 0.99
 
@@ -77,8 +77,13 @@ class Agent(object):
 
     def learn(self, batch_size, gamma, state_number, priority_scale=1.0):
         if self.use_per:
-            (states, actions, rewards, new_states, dones), importance, indices = self.replay_buffer.get_minibatch(batch_size=self.batch_size, priority_scale=priority_scale)
-            importance = importance ** (1-self.calc_epsilon(state_number))
+            if self.multistep:
+                states, actions, multi_step_rewards, end_states, multi_step_dones, importance, indices = self.replay_buffer.get_minibatch(
+                    batch_size=self.batch_size, priority_scale=priority_scale)
+                importance = importance ** (1 - self.calc_epsilon(state_number))
+            else:
+                (states, actions, rewards, new_states, dones), importance, indices = self.replay_buffer.get_minibatch(batch_size=self.batch_size, priority_scale=priority_scale)
+                importance = importance ** (1-self.calc_epsilon(state_number))
         elif self.multistep:
             states, actions, multi_step_rewards, end_states, multi_step_dones = self.replay_buffer.get_minibatch(batch_size=self.batch_size, priority_scale=priority_scale )
         else:

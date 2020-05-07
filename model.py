@@ -18,9 +18,9 @@ def create_model(state_dim, action_dim, is_dueling=True):
     X_input = Input(shape=input_shape)
     X = X_input
 
-    X = Dense(512, input_shape=input_shape, activation="relu", kernel_initializer='glorot_uniform')(X)
+    X = Dense(256, input_shape=input_shape, activation="relu", kernel_initializer='glorot_uniform')(X)
     X = Dense(256, activation="relu", kernel_initializer='glorot_uniform')(X)
-    X = Dense(64, activation="relu", kernel_initializer='glorot_uniform')(X)
+    #X = Dense(64, activation="relu", kernel_initializer='glorot_uniform')(X)
 
     if is_dueling:
         state_value = Dense(1, kernel_initializer='he_uniform')(X)

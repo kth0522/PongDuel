@@ -35,12 +35,6 @@ def is_hit(dir, next_dir, is_end_round):
     else:
         return False
 
-PRE_IDS = {
-    'agent': 'A',
-    'wall': 'W',
-    'ball': 'B',
-    'empty': 'O'
-}
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Random Agent for ma-gym')
@@ -126,32 +120,32 @@ if __name__ == '__main__':
 
                 if reward_n[1] == 1:
                     if is_r_hit:
-                        reward_r = abs(delta_l)*100
+                        reward_r = abs(delta_l)*200
                         reward_l = -abs(delta_l)*150
                     else:
-                        reward_r = 0
+                        reward_r = abs(delta_l)*100
                         reward_l = -abs(delta_l)*50
                 elif reward_n[0] == 1:
                     if is_l_hit:
                         reward_r = -abs(delta_r)*150
-                        reward_l = abs(delta_r)*100
+                        reward_l = abs(delta_r)*200
                     else:
                         reward_r = -abs(delta_r) * 50
-                        reward_l = 0
+                        reward_l = abs(delta_r)*100
                 else:
                     if is_hit(dir, next_dir, end_round) and ball[1] < 0.5:
                         print('left hit!')
                         is_l_hit = True
                         reward_r = 0
-                        reward_l = 10
+                        reward_l = 1
                     elif is_hit(dir, next_dir, end_round) and ball[1] > 0.5:
                         print('right hit!')
                         is_r_hit = True
-                        reward_r = 10
+                        reward_r = 1
                         reward_l = 0
                     else:
-                        reward_l = 0
-                        reward_r = 0
+                        reward_l = -delta_l
+                        reward_r = -delta_r
 
                 LEFT_agent.add_experience(action=l_action, state=state, reward=reward_l, clip_reward=CLIP_REWARD,
                                      done=done_n[0])
