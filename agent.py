@@ -14,8 +14,8 @@ class Agent(object):
                  input_shape=(12,),
                  batch_size=32,
                  eps_initial=1,
-                 eps_mid=0.1,
-                 eps_final=0.01,
+                 eps_mid=0.5,
+                 eps_final=0.001,
                  eps_eval=0.0,
                  eps_annealing_states=1000000,
                  replay_buffer_start_size=50000,
@@ -23,6 +23,10 @@ class Agent(object):
                  use_per=True):
         self.n_actions = n_actions
         self.input_shape = input_shape
+        self.multistep = True
+        self.n_step = 6
+
+        self.gamma = 0.99
 
         self.replay_buffer_start_size = replay_buffer_start_size
         self.max_states = max_states
@@ -75,24 +79,48 @@ class Agent(object):
         if self.use_per:
             (states, actions, rewards, new_states, dones), importance, indices = self.replay_buffer.get_minibatch(batch_size=self.batch_size, priority_scale=priority_scale)
             importance = importance ** (1-self.calc_epsilon(state_number))
+        elif self.multistep:
+            states, actions, multi_step_rewards, end_states, multi_step_dones = self.replay_buffer.get_minibatch(batch_size=self.batch_size, priority_scale=priority_scale )
         else:
             states, actions, rewards, new_states, dones = self.replay_buffer.get_minibatch(batch_size=self.batch_size, priority_scale=priority_scale)
 
-        new_states = np.asarray(new_states)
-        states = np.asarray(states)
-        actions = np.asarray(actions)
-        dones = np.asarray(dones)
-        rewards = np.asarray(dones)
+        if self.multistep:
+            multi_step_rewards = np.asarray(multi_step_rewards)
+            multi_step_dones = np.asarray(multi_step_dones)
+            reward_sum = multi_step_rewards[0]
+            gamma = self.gamma
+            for i in range(1, self.n_step):
+                step_reward = multi_step_rewards[i] * gamma
+                reward_sum += step_reward
+                gamma *= gamma
+            end_states = np.asarray(end_states)
+            states = np.asarray(states)
+            actions = np.asarray(actions)
+            dones = np.asarray(multi_step_dones)
+            reward_sum = np.asarray(reward_sum)
 
-        states = np.atleast_2d(states.astype('float32'))
-        new_states = np.atleast_2d(new_states.astype('float32'))
-        arg_q_max = self.DQN.predict(new_states).argmax(axis=1)
+            states = np.atleast_2d(states.astype('float32'))
+            end_states = np.atleast_2d(end_states.astype('float32'))
+            arg_q_max = self.DQN.predict(end_states).argmax(axis=1)
+            future_q_vals = self.target_dqn.predict(end_states)
+            double_q = future_q_vals[range(batch_size), arg_q_max]
 
-        future_q_vals = self.target_dqn.predict(new_states)
-        double_q = future_q_vals[range(batch_size), arg_q_max]
+            target_q = reward_sum + (gamma*double_q*(1-multi_step_dones))
+        else:
+            new_states = np.asarray(new_states)
+            states = np.asarray(states)
+            actions = np.asarray(actions)
+            dones = np.asarray(dones)
+            rewards = np.asarray(dones)
 
-        target_q = rewards + (gamma*double_q*(1-dones))
+            states = np.atleast_2d(states.astype('float32'))
+            new_states = np.atleast_2d(new_states.astype('float32'))
+            arg_q_max = self.DQN.predict(new_states).argmax(axis=1)
 
+            future_q_vals = self.target_dqn.predict(new_states)
+            double_q = future_q_vals[range(batch_size), arg_q_max]
+
+            target_q = rewards + (gamma*double_q*(1-dones))
         with tf.GradientTape() as tape:
             q_values = self.DQN(states)
 

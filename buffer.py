@@ -8,7 +8,8 @@ class ReplayBuffer:
         self.input_shape = input_shape
         self.count = 0 # total index of memory written to
         self.current = 0 # index to write to
-
+        self.multistep=True
+        self.n_step = 6
         self.actions = np.empty(self.size, dtype=np.int32)
         self.rewards = np.empty(self.size, dtype=np.float32)
         self.states = np.empty((self.size, self.input_shape[0]))
@@ -39,6 +40,8 @@ class ReplayBuffer:
             while True:
                 if self.use_per:
                     index = np.random.choice(np.arange(0, self.count-1), p=sample_probabilities)
+                elif self.multistep:
+                    index = np.random.choice(np.arange(0, max(self.count-1-self.multistep, 0)))
                 else:
                     index = random.randint(0, self.count-1)
 
@@ -47,15 +50,31 @@ class ReplayBuffer:
 
         states = []
         new_states = []
-        for idx in indices:
-            states.append(self.states[idx, ...])
-            new_states.append(self.states[idx+1, ...])
+        end_states = []
+        multi_step_rewards = []
+        multi_step_dones = []
+        if self.multistep:
+            for i in range(self.n_step):
+                n_step_rewards = []
+                for idx in indices:
+                    n_step_rewards.append(self.rewards[idx+i, ...])
+                multi_step_rewards.append(n_step_rewards)
+            for idx in indices:
+                states.append(self.states[idx, ...])
+                end_states.append(self.states[idx + self.n_step, ...])
+                multi_step_dones.append(self.rewards[idx+self.n_step, ...])
+        else:
+            for idx in indices:
+                states.append(self.states[idx, ...])
+                new_states.append(self.states[idx+1, ...])
 
         if self.use_per:
             importance = 1/self.count * 1/sample_probabilities[[index for index in indices]]
             importance = importance / importance.max()
 
             return (states, self.actions[indices], self.rewards[indices], new_states, self.dones[indices]), importance, indices
+        elif self.multistep:
+            return states, self.actions[indices], multi_step_rewards, end_states, multi_step_dones
         else:
             return states, self.actions[indices], self.rewards[indices], new_states, self.dones[indices]
 

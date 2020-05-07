@@ -10,7 +10,7 @@ from tensorflow.keras.optimizers import Adam
 
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--lr', type=float, default=0.0005)
+parser.add_argument('--lr', type=float, default=0.00005)
 args = parser.parse_args()
 
 def create_model(state_dim, action_dim, is_dueling=True):
@@ -21,8 +21,6 @@ def create_model(state_dim, action_dim, is_dueling=True):
     X = Dense(512, input_shape=input_shape, activation="relu", kernel_initializer='glorot_uniform')(X)
     X = Dense(256, activation="relu", kernel_initializer='glorot_uniform')(X)
     X = Dense(64, activation="relu", kernel_initializer='glorot_uniform')(X)
-    X = Dense(32, activation="relu", kernel_initializer='glorot_uniform')(X)
-    X = Dense(16, activation="relu", kernel_initializer='glorot_uniform')(X)
 
     if is_dueling:
         state_value = Dense(1, kernel_initializer='he_uniform')(X)
