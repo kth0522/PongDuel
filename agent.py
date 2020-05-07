@@ -15,7 +15,7 @@ class Agent(object):
                  batch_size=32,
                  eps_initial=1,
                  eps_mid=0.5,
-                 eps_final=0.001,
+                 eps_final=0.1,
                  eps_eval=0.0,
                  eps_annealing_states=1000000,
                  replay_buffer_start_size=50000,
@@ -24,9 +24,9 @@ class Agent(object):
         self.n_actions = n_actions
         self.input_shape = input_shape
         self.multistep = True
-        self.n_step = 6
+        self.n_step = 4
 
-        self.gamma = 0.99
+        self.gamma = 0.95
 
         self.replay_buffer_start_size = replay_buffer_start_size
         self.max_states = max_states
