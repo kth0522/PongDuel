@@ -5,8 +5,9 @@ ENV_NAME = 'PongDuel-v0'
 # If LOAD_FROM is None, it will train a new agent.
 # If SAVE_PATH is None, it will not save the agent
 #LOAD_FROM = 'PongDuel-saves/save-L2'
-LEFT_LOAD_FROM = None
-LOAD_FROM = None
+RIGHT_LOAD_FROM = 'PongDuel-saves/save-R00010803'
+LEFT_LOAD_FROM = 'PongDuel-saves/save-L00010803'
+LOAD_FROM = 'PongDuel-saves'
 SAVE_PATH = 'PongDuel-saves'
 LOAD_REPLAY_BUFFER = True
 
@@ -25,7 +26,7 @@ DISCOUNT_FACTOR = 0.95            # Gamma, how much to discount future rewards
 MIN_REPLAY_BUFFER_SIZE = 50000    # The minimum size the replay buffer must be before we start to update the agent
 MEM_SIZE = 1000000                # The maximum size of the replay buffer
 
-UPDATE_FREQ = 1000                   # Number of actions between gradient descent steps
+UPDATE_FREQ = 500                   # Number of actions between gradient descent steps
 
 INPUT_SHAPE = (12,)            # Size of the preprocessed input frame. With the current model architecture, anything below ~80 won't work.
 BATCH_SIZE = 32                   # Number of samples the agent learns from at once

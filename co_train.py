@@ -21,15 +21,26 @@ def concat_obs(obs):
     else:
         return np.array(obs[0][:2] + obs[1])
 
-def is_hit(paddle, ball):
-    if paddle[1]+0.01 > ball[1] and paddle[1]-0.01 < ball[1]:
-        if paddle[0]-2 < ball[0] and paddle[0]+2 > ball[0]:
-            return True
-        else:
-            return False
+def which_dir(dir):
+    for i in range(6):
+        if dir[i] == 1:
+            if i < 3:
+                return 0
+            else:
+                return 1
+
+def is_hit(dir, next_dir, is_end_round):
+    if which_dir(dir) != which_dir(next_dir):
+        return True
     else:
         return False
 
+PRE_IDS = {
+    'agent': 'A',
+    'wall': 'W',
+    'ball': 'B',
+    'empty': 'O'
+}
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Random Agent for ma-gym')
@@ -93,7 +104,7 @@ if __name__ == '__main__':
             while not all(done_n):
                 l_action = LEFT_agent.get_action(state_number, state, evaluation=False)
                 r_action = RIGHT_agent.get_action(state_number, state, evaluation=False)
-
+                end_round = False
                 next_state, reward_n, done_n, info = env.step([l_action, r_action])
                 next_state = concat_obs(next_state)
                 cur_round = info['rounds']
@@ -102,10 +113,13 @@ if __name__ == '__main__':
                     is_l_hit = False
                     is_r_hit = False
                     round = cur_round
+                    end_round = True
 
                 paddle_l = np.array([state[0], state[1]])
                 paddle_r = np.array([state[2], state[3]])
                 ball = np.array([state[4], state[5]])
+                dir = np.array(state[6:12])
+                next_dir = np.array(next_state[6:12])
 
                 delta_l = np.square(np.subtract(paddle_l, ball)).mean()
                 delta_r = np.square(np.subtract(paddle_r, ball)).mean()
@@ -125,16 +139,16 @@ if __name__ == '__main__':
                         reward_r = -abs(delta_r) * 50
                         reward_l = 0
                 else:
-                    if is_hit(paddle_l, ball):
-                        #print('left hit!')
+                    if is_hit(dir, next_dir, end_round) and ball[1] < 0.5:
+                        print('left hit!')
                         is_l_hit = True
-                        reward_r = -10
-                        reward_l = 200
-                    elif is_hit(paddle_r, ball):
-                        #print('right hit!')
+                        reward_r = 0
+                        reward_l = 10
+                    elif is_hit(dir, next_dir, end_round) and ball[1] > 0.5:
+                        print('right hit!')
                         is_r_hit = True
-                        reward_r = 200
-                        reward_l = -10
+                        reward_r = 10
+                        reward_l = 0
                     else:
                         reward_l = 0
                         reward_r = 0
@@ -169,7 +183,8 @@ if __name__ == '__main__':
 
             cur_time = datetime.now()
             print("{}||Episode #{} left: {} right: {}".format(cur_time, ep_i, l_cnt, r_cnt))
-            
+
+
 
         print('\nTraining end.')
         if SAVE_PATH is None:

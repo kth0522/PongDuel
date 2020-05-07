@@ -24,9 +24,9 @@ class Agent(object):
         self.n_actions = n_actions
         self.input_shape = input_shape
         self.multistep = True
-        self.n_step = 4
+        self.n_step = 3
 
-        self.gamma = 0.95
+        self.gamma = 0.99
 
         self.replay_buffer_start_size = replay_buffer_start_size
         self.max_states = max_states
