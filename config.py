@@ -5,9 +5,10 @@ ENV_NAME = 'PongDuel-v0'
 # If LOAD_FROM is None, it will train a new agent.
 # If SAVE_PATH is None, it will not save the agent
 #LOAD_FROM = 'PongDuel-saves/save-L2'
-RIGHT_LOAD_FROM = 'PongDuel-saves/save-R00575000'
-LEFT_LOAD_FROM = 'PongDuel-saves/save-L00575000'
-LOAD_FROM = None
+RIGHT_LOAD_FROM = 'PongDuel-saves/save-Rb11'
+LEFT_LOAD_FROM = 'PongDuel-saves/save-Lb11'
+#LOAD_FROM = 'PongDuel-saves'
+LOAD_FROM = 'PongDuel-saves'
 SAVE_PATH = 'PongDuel-saves'
 LOAD_REPLAY_BUFFER = True
 
@@ -24,7 +25,7 @@ MAX_EPISODE_LENGTH = 20000        # Maximum length of an episode (in frames).  1
 
 DISCOUNT_FACTOR = 0.95            # Gamma, how much to discount future rewards
 MIN_REPLAY_BUFFER_SIZE = 50000    # The minimum size the replay buffer must be before we start to update the agent
-MEM_SIZE = 150000                # The maximum size of the replay buffer
+MEM_SIZE = 50000                # The maximum size of the replay buffer
 
 UPDATE_FREQ = 100                   # Number of actions between gradient descent steps
 

@@ -78,6 +78,9 @@ if __name__ == '__main__':
         state_number = meta_l['state_number']
         LEFT_loss_list = meta_l['LEFT_loss_list']
         RIGHT_loss_list = meta_r['RIGHT_loss_list']
+        # state_number = 0
+        # LEFT_loss_list = []
+        # RIGHT_loss_list = []
 
     try:
         for ep_i in range(args.episodes):
@@ -120,28 +123,28 @@ if __name__ == '__main__':
 
                 if reward_n[1] == 1:
                     if is_r_hit:
-                        reward_r = abs(delta_l)*20
-                        reward_l = -abs(delta_l)*15
+                        reward_r = abs(delta_l)*300
+                        reward_l = -abs(delta_l)*300
                     else:
-                        reward_r = abs(delta_l)*10
-                        reward_l = -abs(delta_l)*10
+                        reward_r = abs(delta_l)*100
+                        reward_l = -abs(delta_l)*100
                 elif reward_n[0] == 1:
                     if is_l_hit:
-                        reward_r = -abs(delta_r)*15
-                        reward_l = abs(delta_r)*20
+                        reward_r = -abs(delta_r) * 300
+                        reward_l = abs(delta_r)*300
                     else:
-                        reward_r = -abs(delta_r) * 10
-                        reward_l = abs(delta_r)*10
+                        reward_r = -abs(delta_r) * 100
+                        reward_l = abs(delta_r)*100
                 else:
                     if is_hit(dir, next_dir, end_round) and ball[1] < 0.5:
                         #print('left hit!')
                         is_l_hit = True
                         reward_r = 0
-                        reward_l = 1
+                        reward_l = 10
                     elif is_hit(dir, next_dir, end_round) and ball[1] > 0.5:
                         #print('right hit!')
                         is_r_hit = True
-                        reward_r = 1
+                        reward_r = 10
                         reward_l = 0
                     else:
                         reward_l = 0

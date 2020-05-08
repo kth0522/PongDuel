@@ -10,7 +10,7 @@ from tensorflow.keras.optimizers import Adam
 
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--lr', type=float, default=0.00001)
+parser.add_argument('--lr', type=float, default=0.0001)
 args = parser.parse_args()
 
 def create_model(state_dim, action_dim, is_dueling=True):

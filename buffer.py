@@ -9,7 +9,7 @@ class ReplayBuffer:
         self.count = 0 # total index of memory written to
         self.current = 0 # index to write to
         self.multistep=True
-        self.n_step = 8
+        self.n_step = 3
         self.actions = np.empty(self.size, dtype=np.int32)
         self.rewards = np.empty(self.size, dtype=np.float32)
         self.states = np.empty((self.size, self.input_shape[0]))
