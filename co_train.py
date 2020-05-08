@@ -120,32 +120,34 @@ if __name__ == '__main__':
 
                 if reward_n[1] == 1:
                     if is_r_hit:
-                        reward_r = abs(delta_l)*200
-                        reward_l = -abs(delta_l)*150
+                        reward_r = abs(delta_l)*20
+                        reward_l = -abs(delta_l)*15
                     else:
-                        reward_r = abs(delta_l)*100
-                        reward_l = -abs(delta_l)*50
+                        reward_r = abs(delta_l)*10
+                        reward_l = -abs(delta_l)*10
                 elif reward_n[0] == 1:
                     if is_l_hit:
-                        reward_r = -abs(delta_r)*150
-                        reward_l = abs(delta_r)*200
+                        reward_r = -abs(delta_r)*15
+                        reward_l = abs(delta_r)*20
                     else:
-                        reward_r = -abs(delta_r) * 50
-                        reward_l = abs(delta_r)*100
+                        reward_r = -abs(delta_r) * 10
+                        reward_l = abs(delta_r)*10
                 else:
                     if is_hit(dir, next_dir, end_round) and ball[1] < 0.5:
-                        print('left hit!')
+                        #print('left hit!')
                         is_l_hit = True
                         reward_r = 0
                         reward_l = 1
                     elif is_hit(dir, next_dir, end_round) and ball[1] > 0.5:
-                        print('right hit!')
+                        #print('right hit!')
                         is_r_hit = True
                         reward_r = 1
                         reward_l = 0
                     else:
-                        reward_l = -delta_l
-                        reward_r = -delta_r
+                        reward_l = 0
+                        reward_r = 0
+
+                eps = LEFT_agent.calc_epsilon(state_number=state_number)
 
                 LEFT_agent.add_experience(action=l_action, state=state, reward=reward_l, clip_reward=CLIP_REWARD,
                                      done=done_n[0])
@@ -176,7 +178,7 @@ if __name__ == '__main__':
 
 
             cur_time = datetime.now()
-            print("{}||Episode #{} left: {} right: {}".format(cur_time, ep_i, l_cnt, r_cnt))
+            print("{}||Episode #{} left: {} right: {}||state_number: {}||cur_epsilon: {}".format(cur_time, ep_i, l_cnt, r_cnt, state_number, eps))
 
 
 

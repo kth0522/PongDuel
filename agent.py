@@ -18,13 +18,13 @@ class Agent(object):
                  eps_final=0.1,
                  eps_eval=0.0,
                  eps_annealing_states=1000000,
-                 replay_buffer_start_size=50000,
-                 max_states=25000000,
-                 use_per=False):
+                 replay_buffer_start_size=100000,
+                 max_states=2500000,
+                 use_per=True):
         self.n_actions = n_actions
         self.input_shape = input_shape
         self.multistep = True
-        self.n_step = 5
+        self.n_step = 6
 
         self.gamma = 0.99
 

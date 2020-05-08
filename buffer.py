@@ -3,13 +3,13 @@ import os
 import random
 
 class ReplayBuffer:
-    def __init__(self, size=100000, input_shape=(12,), use_per=True):
+    def __init__(self, size=1000000, input_shape=(12,), use_per=True):
         self.size = size
         self.input_shape = input_shape
         self.count = 0 # total index of memory written to
         self.current = 0 # index to write to
         self.multistep=True
-        self.n_step = 5
+        self.n_step = 8
         self.actions = np.empty(self.size, dtype=np.int32)
         self.rewards = np.empty(self.size, dtype=np.float32)
         self.states = np.empty((self.size, self.input_shape[0]))

@@ -5,8 +5,8 @@ ENV_NAME = 'PongDuel-v0'
 # If LOAD_FROM is None, it will train a new agent.
 # If SAVE_PATH is None, it will not save the agent
 #LOAD_FROM = 'PongDuel-saves/save-L2'
-RIGHT_LOAD_FROM = 'PongDuel-saves/save-R00010803'
-LEFT_LOAD_FROM = 'PongDuel-saves/save-L00010803'
+RIGHT_LOAD_FROM = 'PongDuel-saves/save-R00575000'
+LEFT_LOAD_FROM = 'PongDuel-saves/save-L00575000'
 LOAD_FROM = None
 SAVE_PATH = 'PongDuel-saves'
 LOAD_REPLAY_BUFFER = True
