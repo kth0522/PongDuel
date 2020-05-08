@@ -15,7 +15,7 @@ LOAD_REPLAY_BUFFER = True
 # This is much more computationally expensive, but will also allow for better results. Implementing
 # a binary heap, as recommended in the PER paper, would make this less expensive.
 # Since Breakout is a simple game, I wouldn't recommend using it here.
-USE_PER = True
+USE_PER = False
 
 PRIORITY_SCALE = 0.7              # How much the replay buffer should sample based on priorities. 0 = complete random samples, 1 = completely aligned with priorities
 CLIP_REWARD = False                # Any positive reward is +1, and negative reward is -1, 0 is unchanged
@@ -24,9 +24,9 @@ MAX_EPISODE_LENGTH = 20000        # Maximum length of an episode (in frames).  1
 
 DISCOUNT_FACTOR = 0.95            # Gamma, how much to discount future rewards
 MIN_REPLAY_BUFFER_SIZE = 50000    # The minimum size the replay buffer must be before we start to update the agent
-MEM_SIZE = 1000000                # The maximum size of the replay buffer
+MEM_SIZE = 150000                # The maximum size of the replay buffer
 
-UPDATE_FREQ = 1000                   # Number of actions between gradient descent steps
+UPDATE_FREQ = 100                   # Number of actions between gradient descent steps
 
 INPUT_SHAPE = (12,)            # Size of the preprocessed input frame. With the current model architecture, anything below ~80 won't work.
 BATCH_SIZE = 32                   # Number of samples the agent learns from at once

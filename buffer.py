@@ -32,16 +32,22 @@ class ReplayBuffer:
 
     def get_minibatch(self, batch_size=32, priority_scale=0.0):
         if self.use_per:
-            scaled_priorities = self.priorities[:self.count-1] ** priority_scale
-            sample_probabilities = scaled_priorities / sum(scaled_priorities)
+            if self.multistep:
+                scaled_priorities = self.priorities[:max(self.count-1-self.n_step, 0)]
+                sample_probabilities = scaled_priorities / sum(scaled_priorities)
+            else:
+                scaled_priorities = self.priorities[:self.count-1] ** priority_scale
+                sample_probabilities = scaled_priorities / sum(scaled_priorities)
 
         indices = []
         for i in range(batch_size):
             while True:
                 if self.use_per:
                     index = np.random.choice(np.arange(0, self.count-1), p=sample_probabilities)
+                    if self.multistep:
+                        index = np.random.choice(np.arange(0, max(self.count - 1 - self.n_step, 0)), p=sample_probabilities)
                 elif self.multistep:
-                    index = np.random.choice(np.arange(0, max(self.count-1-self.multistep, 0)))
+                    index = np.random.choice(np.arange(0, max(self.count-1-self.n_step, 0)))
                 else:
                     index = random.randint(0, self.count-1)
 

@@ -17,9 +17,9 @@ class Agent(object):
                  eps_mid=0.5,
                  eps_final=0.1,
                  eps_eval=0.0,
-                 eps_annealing_states=1000000,
+                 eps_annealing_states=250000,
                  replay_buffer_start_size=100000,
-                 max_states=2500000,
+                 max_states=500000,
                  use_per=True):
         self.n_actions = n_actions
         self.input_shape = input_shape
